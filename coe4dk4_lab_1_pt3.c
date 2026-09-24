@@ -32,7 +32,7 @@
  * Simulation Parameters
  */
 
-#define RANDOM_SEED  6254440 //6254440 5259140 6769420
+#define RANDOM_SEED  6769420 //6254440 5259140 6769420
 #define NUMBER_TO_SERVE 10e6
 
 
@@ -116,14 +116,14 @@ int main()
 
         number_in_system--;
         total_served++;
-        total_busy_time += SERVICE_TIME;
+        total_busy_time += exponential_generator((double)SERVICE_TIME);
 
         /* 
           * If there are other customers waiting, start one in service
           * right away.
           */
 
-        if(number_in_system > 0) next_departure_time = clock + SERVICE_TIME;
+        if(number_in_system > 0) next_departure_time = clock + exponential_generator((double)SERVICE_TIME);
 
         /* 
           * Every so often, print an activity message to show we are active. 

@@ -32,11 +32,11 @@
  * Simulation Parameters
  */
 
-#define RANDOM_SEED  6254440 //6254440 5259140 6769420
+#define RANDOM_SEED  6769420 //6254440 5259140 6769420
 #define NUMBER_TO_SERVE 10e6
 
 
-#define SERVICE_TIME 1+8
+#define SERVICE_TIME 18 //double that of 9 (i.e 1+8)
 // #define ARRIVAL_RATE 0.1
 
 #define BLIP_RATE 10000
@@ -75,7 +75,8 @@ int main()
 
   random_generator_initialize(RANDOM_SEED);
 
-  for (double ARRIVAL_RATE = 0.01; ARRIVAL_RATE <= 0.11; ARRIVAL_RATE += 0.01) {
+  //max arrival rate we should be testing for p<1 is 1/18 = 0.055555
+  for (double ARRIVAL_RATE = 0.005; ARRIVAL_RATE <= 0.055; ARRIVAL_RATE += 0.005) {
 
 
     /* Process customers until we are finished. */
@@ -100,7 +101,7 @@ int main()
 
         /* If this customer has arrived to an empty system, start its
       service right away. */
-        if(number_in_system == 1) next_departure_time = clock + SERVICE_TIME;
+        if(number_in_system == 1) next_departure_time = clock + exponential_generator((double)SERVICE_TIME);
 
       } else {
 
@@ -116,14 +117,14 @@ int main()
 
         number_in_system--;
         total_served++;
-        total_busy_time += SERVICE_TIME;
+        total_busy_time += exponential_generator((double)SERVICE_TIME);
 
         /* 
           * If there are other customers waiting, start one in service
           * right away.
           */
 
-        if(number_in_system > 0) next_departure_time = clock + SERVICE_TIME;
+        if(number_in_system > 0) next_departure_time = clock + exponential_generator((double)SERVICE_TIME);
 
         /* 
           * Every so often, print an activity message to show we are active. 
