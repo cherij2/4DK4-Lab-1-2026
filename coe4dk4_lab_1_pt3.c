@@ -32,11 +32,11 @@
  * Simulation Parameters
  */
 
-#define RANDOM_SEED  6769420 //6254440 5259140 6769420
+#define RANDOM_SEED  6254440 //6254440 5259140 6769420
 #define NUMBER_TO_SERVE 10e6
 
 
-#define SERVICE_TIME 1+8
+#define SERVICE_TIME 9
 // #define ARRIVAL_RATE 0.1
 
 #define BLIP_RATE 10000
@@ -54,20 +54,7 @@
 
 int main()
 {
-  double clock = 0; /* Clock keeps track of simulation time. */
 
-  /* System state variables. */
-  int number_in_system = 0;
-  double next_arrival_time = 0;
-  double next_departure_time = 0;
-
-  /* Data collection variables. */
-  long int total_served = 0;
-  long int total_arrived = 0;
-
-  double total_busy_time = 0;
-  double integral_of_n = 0;
-  double last_event_time = 0;
 
   printf("ARRIVAL_RATE,Utilization,Fraction served,Mean number in system,Mean delay\n");
   //printf("ARRIVAL_RATE,Mean delay\n");
@@ -76,6 +63,22 @@ int main()
   random_generator_initialize(RANDOM_SEED);
 
   for (double ARRIVAL_RATE = 0.01; ARRIVAL_RATE <= 0.11; ARRIVAL_RATE += 0.01) {
+    double clock = 0; /* Clock keeps track of simulation time. */
+
+    /* System state variables. */
+    int number_in_system = 0;
+    double next_arrival_time = 0;
+    double next_departure_time = 0;
+
+    /* Data collection variables. */
+    long int total_served = 0;
+    long int total_arrived = 0;
+
+    double total_busy_time = 0;
+    double integral_of_n = 0;
+    double last_event_time = 0;
+
+    double service_time = 0;
 
 
     /* Process customers until we are finished. */
@@ -100,7 +103,11 @@ int main()
 
         /* If this customer has arrived to an empty system, start its
       service right away. */
-        if(number_in_system == 1) next_departure_time = clock + SERVICE_TIME;
+        if(number_in_system == 1) {
+          service_time = exponential_generator((double)SERVICE_TIME); 
+          next_departure_time = clock + service_time;
+          total_busy_time += service_time;
+        }
 
       } else {
 
@@ -116,14 +123,18 @@ int main()
 
         number_in_system--;
         total_served++;
-        total_busy_time += exponential_generator((double)SERVICE_TIME);
+        // total_busy_time += service_time;
 
         /* 
           * If there are other customers waiting, start one in service
           * right away.
           */
 
-        if(number_in_system > 0) next_departure_time = clock + exponential_generator((double)SERVICE_TIME);
+        if(number_in_system > 0){
+          service_time = exponential_generator((double)SERVICE_TIME); 
+          next_departure_time = clock + service_time;
+          total_busy_time += service_time;
+        }
 
         /* 
           * Every so often, print an activity message to show we are active. 
@@ -150,8 +161,7 @@ int main()
     // printf("Hit Enter to finish ... \n");
     // getchar(); 
 
-    total_served = 0;
-    total_arrived = 0;
+
   }
 
   return 0;
