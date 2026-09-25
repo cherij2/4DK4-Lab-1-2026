@@ -31,15 +31,15 @@
 /*
  * Simulation Parameters
  */
-//5259140, 6254440, 6769210
 
-#define RANDOM_SEED 6769210
-#define NUMBER_TO_SERVE 10e6
 
-//10e6, 10e4, 10e2
+#define RANDOM_SEED 1234567 //5259140, 6254440, 6769210, 9876543, 1234567
+#define NUMBER_TO_SERVE 10e2 //10e6, 10e4, 10e2
 
-#define SERVICE_TIME 9
-#define ARRIVAL_RATE 0.1
+
+
+#define SERVICE_TIME 9 //1+8
+// #define ARRIVAL_RATE 0.1
 
 #define BLIP_RATE 10000
 
@@ -56,6 +56,11 @@
 
 int main()
 {
+  printf("ARRIVAL_RATE,Utilization,Fraction served,Mean number in system,Mean delay\n");
+  random_generator_initialize(RANDOM_SEED);
+
+  for(double ARRIVAL_RATE = 0.01; ARRIVAL_RATE <  0.11; ARRIVAL_RATE += 0.01) {
+  
   double clock = 0; /* Clock keeps track of simulation time. */
 
   /* System state variables. */
@@ -72,7 +77,7 @@ int main()
   double last_event_time = 0;
 
   /* Set the seed of the random number generator. */
-  random_generator_initialize(RANDOM_SEED);
+ 
 
   /* Process customers until we are finished. */
   while (total_served < NUMBER_TO_SERVE) {
@@ -125,25 +130,29 @@ int main()
       * Every so often, print an activity message to show we are active. 
       */
 
-     if (total_served % BLIP_RATE == 0)
-       printf("Customers served = %ld (Total arrived = %ld)\r",
-	      total_served, total_arrived);
-   }
+  //    if (total_served % BLIP_RATE == 0)
+  //      printf("Customers served = %ld (Total arrived = %ld)\r",
+	//       total_served, total_arrived);
+  //  }
 
   }
 
+  
   /* Output final results. */
-  printf("\nUtilization = %f\n", total_busy_time/clock);
-  printf("Fraction served = %f\n", (double) total_served/total_arrived);
-  printf("Mean number in system = %f\n", integral_of_n/clock);
-  printf("Mean delay = %f\n", integral_of_n/total_served);
+  // printf("\nUtilization = %f\n", total_busy_time/clock);
+  // printf("Fraction served = %f\n", (double) total_served/total_arrived);
+  // printf("Mean number in system = %f\n", integral_of_n/clock);
+  // printf("Mean delay = %f\n", integral_of_n/total_served);
 
   /* Halt the program before exiting. */
-  printf("Hit Enter to finish ... \n");
-  getchar(); 
+  // printf("Hit Enter to finish ... \n");
+  // getchar(); 
+  }
+  printf("%f,%f,%f,%f,%f\n", ARRIVAL_RATE, total_busy_time/clock, (double) total_served/total_arrived, integral_of_n/clock, integral_of_n/total_served);
 
+
+}
   return 0;
-
 }
 
 

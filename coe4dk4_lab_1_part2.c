@@ -32,8 +32,8 @@
  * Simulation Parameters
  */
 
-#define RANDOM_SEED  6769420 //6254440 5259140 6769420
-#define NUMBER_TO_SERVE 10e6
+#define RANDOM_SEED  6769210 //6254440 5259140 6769420
+#define NUMBER_TO_SERVE 1e6
 
 
 #define SERVICE_TIME 9 //1+8
@@ -55,30 +55,30 @@
 int main()
 {
 
-
-  printf("ARRIVAL_RATE,Utilization,Fraction served,Mean number in system,Mean delay\n");
-  //printf("ARRIVAL_RATE,Mean delay\n");
-    /* Set the seed of the random number generator. */
-
+  /* Set the seed of the random number generator. */
   random_generator_initialize(RANDOM_SEED);
 
-  for (double ARRIVAL_RATE = 0.01; ARRIVAL_RATE <= 0.11; ARRIVAL_RATE += 0.01) {
+  printf("ARRIVAL_RATE,Utilization,Fraction served,Mean number in system,Mean delay\n");
 
-      double clock = 0; /* Clock keeps track of simulation time. */
+  /* Sweep rho */
+  for (double desired_util = 0.01; desired_util <= 0.11; desired_util += 0.01) {
 
-      /* System state variables. */
-      int number_in_system = 0;
-      double next_arrival_time = 0;
-      double next_departure_time = 0;
+    double clock = 0; /* Clock keeps track of simulation time. */
 
-      /* Data collection variables. */
-      long int total_served = 0;
-      long int total_arrived = 0;
+    /* System state variables. */
+    int number_in_system = 0;
+    double next_arrival_time = 0;
+    double next_departure_time = 0;
 
-      double total_busy_time = 0;
-      double integral_of_n = 0;
-      double last_event_time = 0;
+    /* Data collection variables. */
+    long int total_served = 0;
+    long int total_arrived = 0;
 
+    double total_busy_time = 0;
+    double integral_of_n = 0;
+    double last_event_time = 0;
+
+    double ARRIVAL_RATE = desired_util /(double) SERVICE_TIME;
 
     /* Process customers until we are finished. */
     while (total_served < NUMBER_TO_SERVE) {
@@ -137,10 +137,8 @@ int main()
       
     }
 
-    //printf("\nARRIVAL_RATE= %f\n", ARRIVAL_RATE);
     /* Output final results. */
     printf("%f,%f,%f,%f,%f\n", ARRIVAL_RATE, total_busy_time/clock, (double) total_served/total_arrived, integral_of_n/clock, integral_of_n/total_served);
-    //printf("%f,%f\n", ARRIVAL_RATE, integral_of_n/total_served);
     /*
     printf("\nUtilization = %f\n", total_busy_time/clock);
     printf("Fraction served = %f\n", (double) total_served/total_arrived);

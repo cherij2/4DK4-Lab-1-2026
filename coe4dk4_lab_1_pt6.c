@@ -32,7 +32,7 @@
  * Simulation Parameters
  */
 
-#define RANDOM_SEED  6769420 //6254440 5259140 6769420
+#define RANDOM_SEED  5259140 //6254440 5259140 6769420
 #define NUMBER_TO_SERVE 10e6
 
 
@@ -71,7 +71,7 @@ int main()
     random_generator_initialize(RANDOM_SEED);
 
     //because we have a queue now, we don't have to stay below p<1, have to find arrival rates for appropriate critical response arrives
-    for (double ARRIVAL_RATE = 0.01; ARRIVAL_RATE <= 0.51; ARRIVAL_RATE += 0.01) {
+    for (double ARRIVAL_RATE = 0.01; ARRIVAL_RATE <= 0.51; ARRIVAL_RATE += 0.02) {
       
       int number_in_system = 0;
       double next_arrival_time = 0;
